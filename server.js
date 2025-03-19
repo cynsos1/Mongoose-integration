@@ -1,16 +1,21 @@
-// Set the 'NODE_ENV' variable
-process.env.NODE_ENV = process.env.NODE_ENV || 'development';
-// Load the module dependencies
-const configureMongoose = require('./config/mongoose');
-const configureExpress = require('./config/express');
-// Create a new Mongoose connection instance
-const db = configureMongoose();
-// Create a new Express application instance
-const app = configureExpress();
-// Use the Express application instance to listen to the '3000' port
-app.listen(3001);
-// Log the server status to the console
-console.log('Server running at http://localhost:3001/');
-// Use the module.exports property to expose our Express application instance
-// for external usage
-module.exports = app;
+const express = require("express");
+const mongoose = require("mongoose");
+
+const app = express();
+app.use(express.json());
+
+mongoose.connect("mongodb://localhost:27017/mongoose-assessment", {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+})
+.then(() => console.log("Connected to MongoDB"))
+.catch(err => console.log(err));
+
+app.get("/", (req, res) => {
+    res.send("Server is running!");
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
